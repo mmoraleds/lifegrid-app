@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ LIFEGRID - DASHBOARD ⚡</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Background -->
+    <div class="bg-container">
+        <div class="bg-glow"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-container">
+
+        <!-- Header -->
+        <header class="dash-header">
+            <div class="header-left">
+                <span class="header-icon">⚡</span>
+                <h1 class="header-title">LIFEGRID</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar"><span>👤</span></div>
+                    <span class="user-name" id="displayName">AGENT</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">⏻ LOGOUT</button>
+            </div>
+        </header>
+
+        <!-- Subheader -->
+        <div class="dash-subheader">
+            <p class="subtitle-text">⚡ ROUTING GUIDE - GOVERNMENT SERVICES ⚡</p>
+            <div class="subheader-stats">
+                <span class="progress-text" id="progressText">0%</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width:0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agency Cards -->
+        <div class="agency-grid">
+
+            <div class="agency-card" onclick="openGuide('SSS')" style="--card-color: #ff4de3;">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <span class="card-icon">🏢</span>
+                    <span class="card-badge pending" id="badge-SSS">PENDING</span>
+                </div>
+                <h3 class="card-title">SSS</h3>
+                <p class="card-desc">Social Security System<br>Retirement & Benefits</p>
+                <div class="card-footer">
+                    <span class="card-status" id="status-SSS">● PENDING</span>
+                    <span class="card-arrow">▶</span>
+                </div>
+            </div>
+
+            <div class="agency-card" onclick="openGuide('PhilHealth')" style="--card-color: #8ffcff;">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <span class="card-icon">🏥</span>
+                    <span class="card-badge pending" id="badge-PhilHealth">PENDING</span>
+                </div>
+                <h3 class="card-title">PHILHEALTH</h3>
+                <p class="card-desc">National Health Insurance<br>Medical Coverage</p>
+                <div class="card-footer">
+                    <span class="card-status" id="status-PhilHealth">● PENDING</span>
+                    <span class="card-arrow">▶</span>
+                </div>
+            </div>
+
+            <div class="agency-card" onclick="openGuide('Pag-IBIG')" style="--card-color: #ff6b00;">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <span class="card-icon">🏠</span>
+                    <span class="card-badge pending" id="badge-Pag-IBIG">PENDING</span>
+                </div>
+                <h3 class="card-title">PAG-IBIG</h3>
+                <p class="card-desc">Home Development Fund<br>Housing & Savings</p>
+                <div class="card-footer">
+                    <span class="card-status" id="status-Pag-IBIG">● PENDING</span>
+                    <span class="card-arrow">▶</span>
+                </div>
+            </div>
+
+            <div class="agency-card" onclick="openGuide('PSA')" style="--card-color: #00ff41;">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <span class="card-icon">🪪</span>
+                    <span class="card-badge pending" id="badge-PSA">PENDING</span>
+                </div>
+                <h3 class="card-title">PSA</h3>
+                <p class="card-desc">Philippine Statistics Authority<br>Birth Certificates & IDs</p>
+                <div class="card-footer">
+                    <span class="card-status" id="status-PSA">● PENDING</span>
+                    <span class="card-arrow">▶</span>
+                </div>
+            </div>
+
+            <div class="agency-card" onclick="openGuide('LTO')" style="--card-color: #ff4444;">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <span class="card-icon">🚗</span>
+                    <span class="card-badge pending" id="badge-LTO">PENDING</span>
+                </div>
+                <h3 class="card-title">LTO</h3>
+                <p class="card-desc">Land Transportation Office<br>Driver's License & Registration</p>
+                <div class="card-footer">
+                    <span class="card-status" id="status-LTO">● PENDING</span>
+                    <span class="card-arrow">▶</span>
+                </div>
+            </div>
+
+            <div class="agency-card" onclick="openGuide('BIR')" style="--card-color: #aa66ff;">
+                <div class="card-glow"></div>
+                <div class="card-header">
+                    <span class="card-icon">💰</span>
+                    <span class="card-badge pending" id="badge-BIR">PENDING</span>
+                </div>
+                <h3 class="card-title">BIR</h3>
+                <p class="card-desc">Bureau of Internal Revenue<br>Tax Registration & Compliance</p>
+                <div class="card-footer">
+                    <span class="card-status" id="status-BIR">● PENDING</span>
+                    <span class="card-arrow">▶</span>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="dash-footer">
+            <span class="blink">█</span> LIFEGRID NETWORK: ACTIVE <span class="blink">█</span>
+            <span class="footer-cyber">// ADULTING_GUIDE_v2.0 //</span>
+        </footer>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">🏢 AGENCY</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>

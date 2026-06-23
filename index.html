@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ LIFEGRID - NEON ACCESS ⚡</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Background -->
+    <div class="bg-container">
+        <div class="bg-glow"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="glow-border"></div>
+            
+            <div class="auth-header">
+                <div class="cyber-text blink-text">&gt;_ ACCESS_TERMINAL</div>
+                <div class="logo-wrapper">
+                    <div class="logo-icon">⚡</div>
+                    <h1 class="auth-title">
+                        <span class="title-letter yellow">L</span>
+                        <span class="title-letter blue">I</span>
+                        <span class="title-letter yellow">F</span>
+                        <span class="title-letter blue">E</span>
+                        <span class="title-letter yellow">G</span>
+                        <span class="title-letter blue">R</span>
+                        <span class="title-letter yellow">I</span>
+                        <span class="title-letter blue">D</span>
+                    </h1>
+                </div>
+                <p class="auth-subtitle">⚡ ADULTING GUIDE ⚡</p>
+                <div class="status-dot">
+                    <span class="dot"></span>
+                    <span class="status-text">SYSTEM READY</span>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>👤 USERNAME</label>
+                    <input type="text" id="loginUsername" placeholder="Enter username" required>
+                    <div class="input-glow"></div>
+                </div>
+                <div class="form-group">
+                    <label>🔒 PASSWORD</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required>
+                    <div class="input-glow"></div>
+                </div>
+                <button type="submit" class="auth-btn">
+                    <span class="btn-text">⚡ ACCESS SYSTEM</span>
+                    <span class="btn-shimmer"></span>
+                </button>
+                <p class="auth-switch">
+                    New agent? <span onclick="showRegister()">▶ REGISTER</span>
+                </p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form" style="display:none;" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>👤 FULL NAME</label>
+                    <input type="text" id="regFullname" placeholder="Enter full name" required>
+                    <div class="input-glow"></div>
+                </div>
+                <div class="form-group">
+                    <label>🔑 USERNAME</label>
+                    <input type="text" id="regUsername" placeholder="Choose username" required>
+                    <div class="input-glow"></div>
+                </div>
+                <div class="form-group">
+                    <label>📧 EMAIL</label>
+                    <input type="email" id="regEmail" placeholder="Enter email" required>
+                    <div class="input-glow"></div>
+                </div>
+                <div class="form-group">
+                    <label>🔒 PASSWORD</label>
+                    <input type="password" id="regPassword" placeholder="Create password" required>
+                    <div class="input-glow"></div>
+                </div>
+                <button type="submit" class="auth-btn">
+                    <span class="btn-text">🔗 CREATE ACCOUNT</span>
+                    <span class="btn-shimmer"></span>
+                </button>
+                <p class="auth-switch">
+                    Already registered? <span onclick="showLogin()">▶ LOGIN</span>
+                </p>
+            </form>
+
+            <div class="hud-corner tl"></div>
+            <div class="hud-corner tr"></div>
+            <div class="hud-corner bl"></div>
+            <div class="hud-corner br"></div>
+            
+            <div class="auth-footer">
+                <span class="footer-text">🔒 ENCRYPTED CONNECTION</span>
+                <span class="footer-dot">●</span>
+                <span class="footer-text">v2.0</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
