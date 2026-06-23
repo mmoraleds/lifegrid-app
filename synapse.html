@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ LIFEGRID - MAP ⚡</title>
+    <link rel="stylesheet" href="synapse.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- KAKYA STYLE BACKGROUND -->
+    <!-- ========================================== -->
+    <div class="bg-container">
+        <div class="bg-glow"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTAINER -->
+    <!-- ========================================== -->
+    <div class="main-container">
+
+        <!-- ===== TOP HEADER ===== -->
+        <header class="cyber-header">
+            <div class="header-left">
+                <span class="header-icon">⚡</span>
+                <h1 class="header-title">LIFEGRID</h1>
+            </div>
+            <div class="header-right">
+                <span class="header-status">● ONLINE</span>
+                <button onclick="goBackToMainWebsite()" class="back-btn-cute">✕</button>
+            </div>
+        </header>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <div class="content-wrapper">
+
+            <!-- ===== LEFT PANEL - PROFILE ===== -->
+            <div class="cyber-panel left-panel">
+                <div class="panel-corner"></div>
+                
+                <!-- ===== PROFILE IMAGE - Replace src with your PNG ===== -->
+                <div class="profile-avatar-wrapper">
+                    <img src="cat.png" alt="Profile" class="profile-avatar-img">
+                </div>
+                
+                <div class="profile-name">Agent</div>
+                <div class="profile-level">LEVEL 01</div>
+                <div class="profile-status">● ACTIVE</div>
+                <div class="profile-divider"></div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="stat-num">6</span>
+                        <span class="stat-label">Agencies</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-num">🏆</span>
+                        <span class="stat-label">Rank</span>
+                    </div>
+                </div>
+                <button onclick="getCurrentLocation()" class="panel-btn">
+                    📍 LOCATE ME
+                </button>
+            </div>
+
+            <!-- ===== CENTER - MAP ===== -->
+            <div class="map-wrapper">
+                <div id="map"></div>
+                <div class="map-overlay-text">✦ NEON NETWORK ✦</div>
+            </div>
+
+        </div>
+
+        <!-- ===== BOTTOM - AGENCY BUTTONS ===== -->
+        <div class="bottom-bar">
+            <button class="app-btn" onclick="findOffice('SSS Office')">
+                <span class="app-icon">🏛️</span>
+                <span class="app-label">SSS</span>
+            </button>
+            <button class="app-btn" onclick="findOffice('PhilHealth Office')">
+                <span class="app-icon">🏥</span>
+                <span class="app-label">PHIL</span>
+            </button>
+            <button class="app-btn" onclick="findOffice('Pag-IBIG Fund')">
+                <span class="app-icon">🏠</span>
+                <span class="app-label">PAG-IBIG</span>
+            </button>
+            <button class="app-btn" onclick="findOffice('PSA Office')">
+                <span class="app-icon">🪪</span>
+                <span class="app-label">PSA</span>
+            </button>
+            <button class="app-btn" onclick="findOffice('LTO Office')">
+                <span class="app-icon">🚗</span>
+                <span class="app-label">LTO</span>
+            </button>
+            <button class="app-btn" onclick="findOffice('BIR Office')">
+                <span class="app-icon">💰</span>
+                <span class="app-label">BIR</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="synapse.js"></script>
+</body>
+</html>
