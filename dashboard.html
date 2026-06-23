@@ -4,8 +4,559 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>⚡ LIFEGRID - DASHBOARD ⚡</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+            animation: pulseGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            font-size: 2em;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ffff, #ff4de3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .user-avatar {
+            font-size: 1.2em;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #00ffff;
+        }
+
+        .logout-btn {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ff4444;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
+        }
+
+        /* Subheader */
+        .dash-subheader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .subtitle-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85em;
+            color: #00ffff;
+            letter-spacing: 2px;
+        }
+
+        .subheader-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 200px;
+        }
+
+        .progress-text {
+            font-weight: 700;
+            color: #ff4de3;
+            min-width: 45px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            min-width: 100px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff4de3);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Agency Grid */
+        .agency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .agency-card {
+            position: relative;
+            background: rgba(10, 10, 15, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .agency-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--card-color, #00ffff);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--card-color, #00ffff), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .agency-card:hover .card-glow {
+            opacity: 0.1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 2em;
+        }
+
+        .card-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-badge.pending {
+            background: rgba(255, 255, 0, 0.2);
+            color: #ffff00;
+            border: 1px solid #ffff00;
+        }
+
+        .card-badge.completed {
+            background: rgba(0, 255, 65, 0.2);
+            color: #00ff41;
+            border: 1px solid #00ff41;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-status {
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .card-status.pending {
+            color: #ffff00;
+        }
+
+        .card-status.completed {
+            color: #00ff41;
+        }
+
+        .card-arrow {
+            color: var(--card-color, #00ffff);
+            transition: transform 0.3s ease;
+        }
+
+        .agency-card:hover .card-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            color: #00ffff;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 68, 68, 0.2);
+        }
+
+        .modal-body {
+            padding: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-body li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-body li:before {
+            content: "▸";
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .modal-body .complete-btn {
+            background: linear-gradient(135deg, #00ffff, #ff4de3);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .modal-body .complete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .modal-body .complete-btn.completed {
+            background: #00ff41;
+            cursor: default;
+        }
+
+        /* Footer */
+        .dash-footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+            color: #00ff41;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .footer-cyber {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Notification */
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .notification {
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px 25px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notification.success {
+            border-color: #00ff41;
+            color: #00ff41;
+        }
+
+        .notification.info {
+            border-color: #00ffff;
+            color: #00ffff;
+        }
+
+        /* Open Map Button */
+        .open-map-btn {
+            display: block;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #00ffff, #ff4de3);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .open-map-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dash-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .header-left, .header-right {
+                justify-content: center;
+            }
+
+            .header-title {
+                font-size: 1.3em;
+            }
+
+            .dash-subheader {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .subheader-stats {
+                width: 100%;
+            }
+
+            .agency-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -33,6 +584,10 @@
             </div>
         </header>
 
+        <button class="open-map-btn" onclick="window.location.href='synapse.html'">
+            🗺️ Open Main Map
+        </button>
+
         <!-- Subheader -->
         <div class="dash-subheader">
             <p class="subtitle-text">⚡ ROUTING GUIDE - GOVERNMENT SERVICES ⚡</p>
@@ -46,7 +601,6 @@
 
         <!-- Agency Cards -->
         <div class="agency-grid">
-
             <div class="agency-card" onclick="openGuide('SSS')" style="--card-color: #ff4de3;">
                 <div class="card-glow"></div>
                 <div class="card-header">
@@ -56,7 +610,7 @@
                 <h3 class="card-title">SSS</h3>
                 <p class="card-desc">Social Security System<br>Retirement & Benefits</p>
                 <div class="card-footer">
-                    <span class="card-status" id="status-SSS">● PENDING</span>
+                    <span class="card-status pending" id="status-SSS">● PENDING</span>
                     <span class="card-arrow">▶</span>
                 </div>
             </div>
@@ -70,7 +624,7 @@
                 <h3 class="card-title">PHILHEALTH</h3>
                 <p class="card-desc">National Health Insurance<br>Medical Coverage</p>
                 <div class="card-footer">
-                    <span class="card-status" id="status-PhilHealth">● PENDING</span>
+                    <span class="card-status pending" id="status-PhilHealth">● PENDING</span>
                     <span class="card-arrow">▶</span>
                 </div>
             </div>
@@ -84,7 +638,7 @@
                 <h3 class="card-title">PAG-IBIG</h3>
                 <p class="card-desc">Home Development Fund<br>Housing & Savings</p>
                 <div class="card-footer">
-                    <span class="card-status" id="status-Pag-IBIG">● PENDING</span>
+                    <span class="card-status pending" id="status-Pag-IBIG">● PENDING</span>
                     <span class="card-arrow">▶</span>
                 </div>
             </div>
@@ -98,7 +652,7 @@
                 <h3 class="card-title">PSA</h3>
                 <p class="card-desc">Philippine Statistics Authority<br>Birth Certificates & IDs</p>
                 <div class="card-footer">
-                    <span class="card-status" id="status-PSA">● PENDING</span>
+                    <span class="card-status pending" id="status-PSA">● PENDING</span>
                     <span class="card-arrow">▶</span>
                 </div>
             </div>
@@ -112,7 +666,7 @@
                 <h3 class="card-title">LTO</h3>
                 <p class="card-desc">Land Transportation Office<br>Driver's License & Registration</p>
                 <div class="card-footer">
-                    <span class="card-status" id="status-LTO">● PENDING</span>
+                    <span class="card-status pending" id="status-LTO">● PENDING</span>
                     <span class="card-arrow">▶</span>
                 </div>
             </div>
@@ -126,18 +680,16 @@
                 <h3 class="card-title">BIR</h3>
                 <p class="card-desc">Bureau of Internal Revenue<br>Tax Registration & Compliance</p>
                 <div class="card-footer">
-                    <span class="card-status" id="status-BIR">● PENDING</span>
+                    <span class="card-status pending" id="status-BIR">● PENDING</span>
                     <span class="card-arrow">▶</span>
                 </div>
             </div>
-
         </div>
 
         <footer class="dash-footer">
             <span class="blink">█</span> LIFEGRID NETWORK: ACTIVE <span class="blink">█</span>
             <span class="footer-cyber">// ADULTING_GUIDE_v2.0 //</span>
         </footer>
-
     </div>
 
     <!-- Modal -->
@@ -147,11 +699,253 @@
                 <h2 id="modalTitle">🏢 AGENCY</h2>
                 <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
-            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-body" id="modalBody">
+                <p>Loading guide...</p>
+            </div>
         </div>
     </div>
 
     <div id="notification-container"></div>
-    <script src="script.js"></script>
+
+    <script>
+        // Agency data with detailed guides
+        const agencyData = {
+            'SSS': {
+                name: 'SSS',
+                icon: '🏢',
+                steps: [
+                    'Prepare requirements: Birth certificate, valid ID, and filled application form',
+                    'Visit the nearest SSS branch or apply online through the SSS website',
+                    'Submit requirements and pay the initial contribution',
+                    'Receive your SSS number and ID',
+                    'Activate your online account for future transactions'
+                ],
+                requirements: 'Birth certificate, valid government ID, 1x1 photo, filled application form'
+            },
+            'PhilHealth': {
+                name: 'PhilHealth',
+                icon: '🏥',
+                steps: [
+                    'Prepare requirements: Birth certificate, valid ID, and filled registration form',
+                    'Visit the nearest PhilHealth office or register online',
+                    'Submit requirements and pay the initial premium',
+                    'Receive your PhilHealth ID number',
+                    'Start enjoying healthcare benefits'
+                ],
+                requirements: 'Birth certificate, valid ID, 2x2 photo, filled registration form'
+            },
+            'Pag-IBIG': {
+                name: 'Pag-IBIG',
+                icon: '🏠',
+                steps: [
+                    'Prepare requirements: Birth certificate, valid ID, and filled membership form',
+                    'Register at the nearest Pag-IBIG office or online',
+                    'Submit requirements and pay the initial savings',
+                    'Receive your Pag-IBIG MID number',
+                    'Start saving for your future home'
+                ],
+                requirements: 'Birth certificate, valid ID, 1x1 photo, filled membership form'
+            },
+            'PSA': {
+                name: 'PSA',
+                icon: '🪪',
+                steps: [
+                    'Prepare requirements: Valid ID and filled application form',
+                    'Visit the nearest PSA office or schedule online',
+                    'Submit requirements and pay the processing fee',
+                    'Receive your PSA birth certificate',
+                    'Request additional copies if needed'
+                ],
+                requirements: 'Valid ID, filled application form, processing fee payment'
+            },
+            'LTO': {
+                name: 'LTO',
+                icon: '🚗',
+                steps: [
+                    'Prepare requirements: Birth certificate, valid ID, and medical certificate',
+                    'Enroll in a driving school or secure a student permit',
+                    'Take the written exam and practical driving test',
+                    'Pass the tests and receive your driver\'s license',
+                    'Renew your license before expiration'
+                ],
+                requirements: 'Birth certificate, valid ID, medical certificate, student permit'
+            },
+            'BIR': {
+                name: 'BIR',
+                icon: '💰',
+                steps: [
+                    'Prepare requirements: Birth certificate, valid ID, and filled registration form',
+                    'Visit the nearest BIR office with jurisdiction over your area',
+                    'Submit requirements and register your business or as individual',
+                    'Receive your TIN (Tax Identification Number)',
+                    'File your taxes regularly to maintain compliance'
+                ],
+                requirements: 'Birth certificate, valid ID, filled registration form, business documents (if applicable)'
+            }
+        };
+
+        // Track completed agencies
+        const completedAgencies = new Set();
+
+        // Load saved progress
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('lifegrid_progress');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    data.forEach(agency => completedAgencies.add(agency));
+                    updateUI();
+                }
+            } catch (e) {
+                console.log('No saved progress found');
+            }
+        }
+
+        // Save progress
+        function saveProgress() {
+            try {
+                localStorage.setItem('lifegrid_progress', JSON.stringify([...completedAgencies]));
+            } catch (e) {
+                console.log('Could not save progress');
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            const totalAgencies = Object.keys(agencyData).length;
+            const completed = completedAgencies.size;
+            const percentage = Math.round((completed / totalAgencies) * 100);
+
+            // Update progress bar
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+
+            // Update each agency card
+            Object.keys(agencyData).forEach(agency => {
+                const isCompleted = completedAgencies.has(agency);
+                const badge = document.getElementById(`badge-${agency}`);
+                const status = document.getElementById(`status-${agency}`);
+
+                if (badge) {
+                    badge.textContent = isCompleted ? 'COMPLETED' : 'PENDING';
+                    badge.className = `card-badge ${isCompleted ? 'completed' : 'pending'}`;
+                }
+                if (status) {
+                    status.textContent = isCompleted ? '● COMPLETED' : '● PENDING';
+                    status.className = `card-status ${isCompleted ? 'completed' : 'pending'}`;
+                }
+            });
+        }
+
+        // Open guide modal
+        function openGuide(agencyName) {
+            const modal = document.getElementById('guideModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            const data = agencyData[agencyName];
+            if (!data) return;
+
+            const isCompleted = completedAgencies.has(agencyName);
+
+            modalTitle.textContent = `${data.icon} ${data.name} - Service Guide`;
+
+            let stepsHtml = '<h3>📋 Steps to Complete:</h3><ul>';
+            data.steps.forEach(step => {
+                stepsHtml += `<li>${step}</li>`;
+            });
+            stepsHtml += '</ul>';
+
+            stepsHtml += `<p><strong>📝 Requirements:</strong> ${data.requirements}</p>`;
+
+            stepsHtml += `
+                <button class="complete-btn ${isCompleted ? 'completed' : ''}" 
+                        onclick="toggleAgency('${agencyName}')" 
+                        id="completeBtn-${agencyName}">
+                    ${isCompleted ? '✅ COMPLETED' : '✅ MARK AS COMPLETED'}
+                </button>
+            `;
+
+            modalBody.innerHTML = stepsHtml;
+            modal.classList.add('active');
+        }
+
+        // Toggle agency completion
+        function toggleAgency(agencyName) {
+            if (completedAgencies.has(agencyName)) {
+                completedAgencies.delete(agencyName);
+                showNotification(`${agencyName} marked as PENDING`, 'info');
+            } else {
+                completedAgencies.add(agencyName);
+                showNotification(`✅ ${agencyName} marked as COMPLETED!`, 'success');
+            }
+
+            updateUI();
+            saveProgress();
+            closeModal();
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('guideModal').classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('guideModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                notification.style.transition = 'all 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showNotification('👋 Logged out successfully', 'info');
+                // Reset the display name or redirect
+                document.getElementById('displayName').textContent = 'AGENT';
+                // Clear some session data if needed
+            }
+        }
+
+        // Initialize
+        loadProgress();
+
+        // Change name on double-click
+        document.getElementById('displayName').addEventListener('dblclick', function() {
+            const newName = prompt('Enter your name:', this.textContent);
+            if (newName && newName.trim()) {
+                this.textContent = newName.trim().toUpperCase();
+                showNotification(`👤 Name changed to ${this.textContent}`, 'success');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        console.log('⚡ LIFEGRID SYSTEM ONLINE');
+        console.log('🔑 Double-click your name to change it');
+        console.log('📋 Click any agency card to view guide');
+        console.log('✅ Mark agencies as completed to track progress');
+    </script>
 </body>
 </html>

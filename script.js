@@ -41,7 +41,7 @@ function updateDashboardUI() {
         const statusEl = document.getElementById('status-' + agency);
         if (statusEl) {
             statusEl.textContent = isCompleted ? '✅ COMPLETED' : '● PENDING';
-            statusEl.className = isCompleted ? 'card-status completed' : 'card-status';
+            statusEl.className = isCompleted ? 'card-status completed' : 'card-status pending';
         }
         const badgeEl = document.getElementById('badge-' + agency);
         if (badgeEl) {
@@ -58,6 +58,11 @@ function updateDashboardUI() {
 }
 
 function toggleAgencyStatus(agency) {
+    if (!currentUser) {
+        showNotification('⚠️ Please login first', '#ffd700');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        return;
+    }
     userProgress[agency] = !userProgress[agency];
     saveProgress();
     updateDashboardUI();
@@ -74,9 +79,14 @@ function checkAuth() {
         if (currentUser) { window.location.href = 'dashboard.html'; return true; }
     }
     if (currentPage.includes('dashboard.html')) {
-        if (!currentUser) { window.location.href = 'index.html'; return false; }
+        if (!currentUser) { 
+            window.location.href = 'index.html'; 
+            return false; 
+        }
         const displayName = document.getElementById('displayName');
-        if (displayName && currentUser) { displayName.textContent = currentUser.fullname.toUpperCase(); }
+        if (displayName && currentUser) { 
+            displayName.textContent = currentUser.fullname.toUpperCase(); 
+        }
         loadProgress();
         updateDashboardUI();
     }
@@ -84,20 +94,27 @@ function checkAuth() {
 }
 
 function showRegister() {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'flex';
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'flex';
 }
 
 function showLogin() {
-    document.getElementById('loginForm').style.display = 'flex';
-    document.getElementById('registerForm').style.display = 'none';
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'flex';
+    if (registerForm) registerForm.style.display = 'none';
 }
 
 function handleLogin(event) {
     event.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
-    if (!username || !password) { showNotification('⚠️ Enter username and password', '#ffd700'); return; }
+    if (!username || !password) { 
+        showNotification('⚠️ Enter username and password', '#ffd700'); 
+        return; 
+    }
     loadUsers();
     const user = users.find(u => u.username === username && u.password === password);
     if (user) {
@@ -117,10 +134,19 @@ function handleRegister(event) {
     const username = document.getElementById('regUsername').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value.trim();
-    if (!fullname || !username || !email || !password) { showNotification('⚠️ All fields are required', '#ffd700'); return; }
+    if (!fullname || !username || !email || !password) { 
+        showNotification('⚠️ All fields are required', '#ffd700'); 
+        return; 
+    }
     loadUsers();
-    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) { showNotification('⚠️ Username already exists', '#ffd700'); return; }
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) { showNotification('⚠️ Email already registered', '#ffd700'); return; }
+    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) { 
+        showNotification('⚠️ Username already exists', '#ffd700'); 
+        return; 
+    }
+    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) { 
+        showNotification('⚠️ Email already registered', '#ffd700'); 
+        return; 
+    }
     const newUser = { fullname, username, email, password, created: new Date().toISOString() };
     users.push(newUser);
     saveUsers();
@@ -134,9 +160,55 @@ function handleRegister(event) {
 }
 
 function logout() {
-    sessionStorage.removeItem('lifegrid_current');
-    currentUser = null;
-    window.location.href = 'index.html';
+    if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem('lifegrid_current');
+        currentUser = null;
+        showNotification('👋 Logged out successfully', '#8ffcff');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 500);
+    }
+}
+
+// ============================================
+// MAP NAVIGATION
+// ============================================
+
+function openMap() {
+    // Check if user is logged in
+    if (!currentUser) {
+        showNotification('⚠️ Please login first to access the map', '#ffd700');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+        return;
+    }
+    
+    // Open the map with user context
+    const mapUrl = 'synapse.html';
+    showNotification('🗺️ Opening Main Map...', '#8ffcff');
+    
+    // Small delay to show notification before redirect
+    setTimeout(() => {
+        window.location.href = mapUrl;
+    }, 300);
+}
+
+function openMapLocator(agency) {
+    closeModal();
+    if (!currentUser) {
+        showNotification('⚠️ Please login first', '#ffd700');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+        return;
+    }
+    
+    showNotification('🗺️ Opening ' + agency + ' location map...', '#8ffcff');
+    setTimeout(() => {
+        // Pass agency parameter and user info
+        window.open('synapse.html?agency=' + encodeURIComponent(agency) + '&user=' + encodeURIComponent(currentUser.username), '_blank');
+    }, 300);
 }
 
 // ============================================
@@ -207,6 +279,16 @@ const guideData = {
 function openGuide(agency) {
     const data = guideData[agency];
     if (!data) return;
+    
+    // Check if user is logged in
+    if (!currentUser) {
+        showNotification('⚠️ Please login first to access guides', '#ffd700');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+        return;
+    }
+    
     const isCompleted = userProgress[agency] || false;
     document.getElementById('modalTitle').textContent = data.title;
     let html = `
@@ -224,12 +306,12 @@ function openGuide(agency) {
         <h3>📌 STEPS TO APPLY</h3><ul>${data.steps.map(step => `<li style="display:flex;align-items:center;gap:10px;padding:6px 0 6px 20px;"><span style="color:rgba(255,77,227,0.3);font-size:11px;">▶</span><span style="color:rgba(255,255,255,0.5);font-size:13px;">${step}</span></li>`).join('')}</ul>
         <h3>✅ BENEFITS</h3><ul>${data.benefits.map(benefit => `<li style="display:flex;align-items:center;gap:10px;padding:6px 0 6px 20px;"><span style="color:#00ff41;font-size:11px;">✦</span><span style="color:rgba(255,255,255,0.5);font-size:13px;">${benefit}</span></li>`).join('')}</ul>
         <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
-            <a href="${data.website}" target="_blank" class="modal-btn">🌐 VISIT WEBSITE</a>
+            <a href="${data.website}" target="_blank" style="padding:10px 20px;border:2px solid rgba(143,252,255,0.2);border-radius:10px;background:rgba(143,252,255,0.05);color:#8ffcff;font-family:'Quicksand',sans-serif;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.3s ease;letter-spacing:1px;">🌐 VISIT WEBSITE</a>
             <span style="color:rgba(255,255,255,0.2);font-size:11px;padding:10px 0;">📞 Hotline: ${data.hotline}</span>
         </div>
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,77,227,0.05);display:flex;gap:10px;flex-wrap:wrap;">
-            <button onclick="openMapLocator('${agency}')" class="modal-btn" style="background:rgba(143,252,255,0.05);border-color:rgba(143,252,255,0.15);color:#8ffcff;cursor:pointer;">🗺️ FIND NEAREST OFFICE</button>
-            <button onclick="toggleAgencyStatus('${agency}'); closeModal();" class="modal-btn" style="background:${isCompleted ? 'rgba(0,255,65,0.05)' : 'rgba(255,77,227,0.05)'};border-color:${isCompleted ? 'rgba(0,255,65,0.2)' : 'rgba(255,77,227,0.15)'};color:${isCompleted ? '#00ff41' : '#ff4de3'};cursor:pointer;">${isCompleted ? '↩️ MARK PENDING' : '✅ MARK COMPLETED'}</button>
+            <button onclick="openMapLocator('${agency}')" style="padding:10px 20px;border:2px solid rgba(143,252,255,0.15);border-radius:10px;background:rgba(143,252,255,0.05);color:#8ffcff;font-family:'Quicksand',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s ease;letter-spacing:1px;">🗺️ FIND NEAREST OFFICE</button>
+            <button onclick="toggleAgencyStatus('${agency}'); closeModal();" style="padding:10px 20px;border:2px solid ${isCompleted ? 'rgba(0,255,65,0.2)' : 'rgba(255,77,227,0.15)'};border-radius:10px;background:${isCompleted ? 'rgba(0,255,65,0.05)' : 'rgba(255,77,227,0.05)'};color:${isCompleted ? '#00ff41' : '#ff4de3'};font-family:'Quicksand',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s ease;letter-spacing:1px;">${isCompleted ? '↩️ MARK PENDING' : '✅ MARK COMPLETED'}</button>
         </div>
     `;
     document.getElementById('modalBody').innerHTML = html;
@@ -237,21 +319,19 @@ function openGuide(agency) {
     document.body.style.overflow = 'hidden';
 }
 
-function openMapLocator(agency) {
-    closeModal();
-    showNotification('🗺️ OPENING MAP - ' + agency, '#8ffcff');
-    setTimeout(() => { window.open('../main%20map/synapse.html?agency=' + encodeURIComponent(agency), '_blank'); }, 300);
-}
-
 function closeModal() {
-    document.getElementById('guideModal').classList.remove('active');
+    const modal = document.getElementById('guideModal');
+    if (modal) modal.classList.remove('active');
     document.body.style.overflow = '';
 }
 
+// Close modal on outside click
 document.addEventListener('click', function(e) {
-    if (e.target === document.getElementById('guideModal')) closeModal();
+    const modal = document.getElementById('guideModal');
+    if (e.target === modal) closeModal();
 });
 
+// Close modal on ESC key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeModal();
     if (e.key === 'Enter') {
@@ -268,18 +348,69 @@ document.addEventListener('keydown', function(e) {
 
 function showNotification(message, color = '#ff4de3') {
     let container = document.getElementById('notification-container');
-    if (!container) { container = document.createElement('div'); container.id = 'notification-container'; document.body.appendChild(container); }
+    if (!container) { 
+        container = document.createElement('div'); 
+        container.id = 'notification-container'; 
+        document.body.appendChild(container); 
+    }
     const notif = document.createElement('div');
     notif.className = 'notification';
-    notif.style.borderColor = color;
-    notif.style.color = color;
+    notif.style.cssText = `
+        background: rgba(10, 10, 15, 0.95);
+        border: 1px solid ${color};
+        border-radius: 12px;
+        padding: 15px 25px;
+        margin-bottom: 10px;
+        animation: slideIn 0.3s ease;
+        backdrop-filter: blur(10px);
+        font-weight: 600;
+        color: ${color};
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    `;
     notif.textContent = '◉ ' + message;
     container.appendChild(notif);
     setTimeout(() => {
-        notif.classList.add('hide');
-        setTimeout(() => { notif.remove(); }, 300);
+        notif.style.opacity = '0';
+        notif.style.transform = 'translateX(100%)';
+        setTimeout(() => { 
+            if (notif.parentNode) notif.remove(); 
+        }, 300);
     }, 2500);
 }
+
+// ============================================
+// ADDITIONAL UTILITY FUNCTIONS
+// ============================================
+
+// Change name on double-click
+document.addEventListener('DOMContentLoaded', function() {
+    const displayName = document.getElementById('displayName');
+    if (displayName) {
+        displayName.addEventListener('dblclick', function() {
+            if (!currentUser) {
+                showNotification('⚠️ Please login first to change name', '#ffd700');
+                return;
+            }
+            const newName = prompt('Enter your name:', this.textContent);
+            if (newName && newName.trim()) {
+                const oldName = currentUser.fullname;
+                currentUser.fullname = newName.trim();
+                // Update in users array
+                const userIndex = users.findIndex(u => u.username === currentUser.username);
+                if (userIndex !== -1) {
+                    users[userIndex].fullname = newName.trim();
+                    saveUsers();
+                }
+                sessionStorage.setItem('lifegrid_current', JSON.stringify(currentUser));
+                this.textContent = newName.trim().toUpperCase();
+                showNotification(`👤 Name changed from ${oldName} to ${this.textContent}`, '#00ff41');
+            }
+        });
+    }
+});
 
 // ============================================
 // CONSOLE EASTER EGG
@@ -287,6 +418,9 @@ function showNotification(message, color = '#ff4de3') {
 
 console.log('%c✦ LIFEGRID - KAKYA EDITION ✦', 'color: #ff4de3; font-size: 20px; font-weight: bold;');
 console.log('%c█ SYSTEM: ACTIVE █', 'color: #8ffcff; font-size: 14px;');
+console.log('%c🔑 Double-click your name to change it', 'color: #ffd700; font-size: 12px;');
+console.log('%c📋 Click any agency card to view guide', 'color: #00ff41; font-size: 12px;');
+console.log('%c✅ Mark agencies as completed to track progress', 'color: #8ffcff; font-size: 12px;');
 
 // ============================================
 // AUTO-INITIALIZE
@@ -296,14 +430,42 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUsers();
     loadCurrentUser();
     checkAuth();
-    document.querySelectorAll('.title-letter').forEach(letter => {
-        letter.setAttribute('data-text', letter.textContent);
-    });
-    if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/') || window.location.pathname.endsWith('/main%20website/')) {
+    
+    // Initialize login/register forms
+    if (window.location.pathname.includes('index.html') || 
+        window.location.pathname.endsWith('/') || 
+        window.location.pathname.endsWith('/main%20website/')) {
         showLogin();
     }
+    
     if (window.location.pathname.includes('dashboard.html')) {
         updateDashboardUI();
     }
+    
     console.log('✅ System initialized');
 });
+
+// Add styles for notifications if not already in CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    #notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        width: 100%;
+    }
+    .notification {
+        word-wrap: break-word;
+    }
+    .notification.hide {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+`;
+document.head.appendChild(style);
