@@ -133,6 +133,7 @@
             font-weight: 600;
             font-size: 0.9em;
             color: #00ffff;
+            cursor: pointer;
         }
 
         .logout-btn {
@@ -203,6 +204,29 @@
             border-radius: 4px;
             transition: width 0.5s ease;
             width: 0%;
+        }
+
+        /* Open Map Button */
+        .open-map-btn {
+            display: block;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #00ffff, #ff4de3);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .open-map-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
         }
 
         /* Agency Grid */
@@ -499,29 +523,6 @@
             color: #00ffff;
         }
 
-        /* Open Map Button */
-        .open-map-btn {
-            display: block;
-            margin: 0 auto 25px;
-            background: linear-gradient(135deg, #00ffff, #ff4de3);
-            color: #000;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .open-map-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .dash-header {
@@ -584,7 +585,8 @@
             </div>
         </header>
 
-        <button class="open-map-btn" onclick="window.location.href='synapse.html'">
+        <!-- Open Map Button - CORRECTED with relative path -->
+        <button onclick="openMap()" class="open-map-btn">
             🗺️ Open Main Map
         </button>
 
@@ -707,245 +709,6 @@
 
     <div id="notification-container"></div>
 
-    <script>
-        // Agency data with detailed guides
-        const agencyData = {
-            'SSS': {
-                name: 'SSS',
-                icon: '🏢',
-                steps: [
-                    'Prepare requirements: Birth certificate, valid ID, and filled application form',
-                    'Visit the nearest SSS branch or apply online through the SSS website',
-                    'Submit requirements and pay the initial contribution',
-                    'Receive your SSS number and ID',
-                    'Activate your online account for future transactions'
-                ],
-                requirements: 'Birth certificate, valid government ID, 1x1 photo, filled application form'
-            },
-            'PhilHealth': {
-                name: 'PhilHealth',
-                icon: '🏥',
-                steps: [
-                    'Prepare requirements: Birth certificate, valid ID, and filled registration form',
-                    'Visit the nearest PhilHealth office or register online',
-                    'Submit requirements and pay the initial premium',
-                    'Receive your PhilHealth ID number',
-                    'Start enjoying healthcare benefits'
-                ],
-                requirements: 'Birth certificate, valid ID, 2x2 photo, filled registration form'
-            },
-            'Pag-IBIG': {
-                name: 'Pag-IBIG',
-                icon: '🏠',
-                steps: [
-                    'Prepare requirements: Birth certificate, valid ID, and filled membership form',
-                    'Register at the nearest Pag-IBIG office or online',
-                    'Submit requirements and pay the initial savings',
-                    'Receive your Pag-IBIG MID number',
-                    'Start saving for your future home'
-                ],
-                requirements: 'Birth certificate, valid ID, 1x1 photo, filled membership form'
-            },
-            'PSA': {
-                name: 'PSA',
-                icon: '🪪',
-                steps: [
-                    'Prepare requirements: Valid ID and filled application form',
-                    'Visit the nearest PSA office or schedule online',
-                    'Submit requirements and pay the processing fee',
-                    'Receive your PSA birth certificate',
-                    'Request additional copies if needed'
-                ],
-                requirements: 'Valid ID, filled application form, processing fee payment'
-            },
-            'LTO': {
-                name: 'LTO',
-                icon: '🚗',
-                steps: [
-                    'Prepare requirements: Birth certificate, valid ID, and medical certificate',
-                    'Enroll in a driving school or secure a student permit',
-                    'Take the written exam and practical driving test',
-                    'Pass the tests and receive your driver\'s license',
-                    'Renew your license before expiration'
-                ],
-                requirements: 'Birth certificate, valid ID, medical certificate, student permit'
-            },
-            'BIR': {
-                name: 'BIR',
-                icon: '💰',
-                steps: [
-                    'Prepare requirements: Birth certificate, valid ID, and filled registration form',
-                    'Visit the nearest BIR office with jurisdiction over your area',
-                    'Submit requirements and register your business or as individual',
-                    'Receive your TIN (Tax Identification Number)',
-                    'File your taxes regularly to maintain compliance'
-                ],
-                requirements: 'Birth certificate, valid ID, filled registration form, business documents (if applicable)'
-            }
-        };
-
-        // Track completed agencies
-        const completedAgencies = new Set();
-
-        // Load saved progress
-        function loadProgress() {
-            try {
-                const saved = localStorage.getItem('lifegrid_progress');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    data.forEach(agency => completedAgencies.add(agency));
-                    updateUI();
-                }
-            } catch (e) {
-                console.log('No saved progress found');
-            }
-        }
-
-        // Save progress
-        function saveProgress() {
-            try {
-                localStorage.setItem('lifegrid_progress', JSON.stringify([...completedAgencies]));
-            } catch (e) {
-                console.log('Could not save progress');
-            }
-        }
-
-        // Update UI
-        function updateUI() {
-            const totalAgencies = Object.keys(agencyData).length;
-            const completed = completedAgencies.size;
-            const percentage = Math.round((completed / totalAgencies) * 100);
-
-            // Update progress bar
-            document.getElementById('progressFill').style.width = percentage + '%';
-            document.getElementById('progressText').textContent = percentage + '%';
-
-            // Update each agency card
-            Object.keys(agencyData).forEach(agency => {
-                const isCompleted = completedAgencies.has(agency);
-                const badge = document.getElementById(`badge-${agency}`);
-                const status = document.getElementById(`status-${agency}`);
-
-                if (badge) {
-                    badge.textContent = isCompleted ? 'COMPLETED' : 'PENDING';
-                    badge.className = `card-badge ${isCompleted ? 'completed' : 'pending'}`;
-                }
-                if (status) {
-                    status.textContent = isCompleted ? '● COMPLETED' : '● PENDING';
-                    status.className = `card-status ${isCompleted ? 'completed' : 'pending'}`;
-                }
-            });
-        }
-
-        // Open guide modal
-        function openGuide(agencyName) {
-            const modal = document.getElementById('guideModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-
-            const data = agencyData[agencyName];
-            if (!data) return;
-
-            const isCompleted = completedAgencies.has(agencyName);
-
-            modalTitle.textContent = `${data.icon} ${data.name} - Service Guide`;
-
-            let stepsHtml = '<h3>📋 Steps to Complete:</h3><ul>';
-            data.steps.forEach(step => {
-                stepsHtml += `<li>${step}</li>`;
-            });
-            stepsHtml += '</ul>';
-
-            stepsHtml += `<p><strong>📝 Requirements:</strong> ${data.requirements}</p>`;
-
-            stepsHtml += `
-                <button class="complete-btn ${isCompleted ? 'completed' : ''}" 
-                        onclick="toggleAgency('${agencyName}')" 
-                        id="completeBtn-${agencyName}">
-                    ${isCompleted ? '✅ COMPLETED' : '✅ MARK AS COMPLETED'}
-                </button>
-            `;
-
-            modalBody.innerHTML = stepsHtml;
-            modal.classList.add('active');
-        }
-
-        // Toggle agency completion
-        function toggleAgency(agencyName) {
-            if (completedAgencies.has(agencyName)) {
-                completedAgencies.delete(agencyName);
-                showNotification(`${agencyName} marked as PENDING`, 'info');
-            } else {
-                completedAgencies.add(agencyName);
-                showNotification(`✅ ${agencyName} marked as COMPLETED!`, 'success');
-            }
-
-            updateUI();
-            saveProgress();
-            closeModal();
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('guideModal').classList.remove('active');
-        }
-
-        // Close modal on outside click
-        document.getElementById('guideModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('notification-container');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            container.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateX(100%)';
-                notification.style.transition = 'all 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Logout function
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                showNotification('👋 Logged out successfully', 'info');
-                // Reset the display name or redirect
-                document.getElementById('displayName').textContent = 'AGENT';
-                // Clear some session data if needed
-            }
-        }
-
-        // Initialize
-        loadProgress();
-
-        // Change name on double-click
-        document.getElementById('displayName').addEventListener('dblclick', function() {
-            const newName = prompt('Enter your name:', this.textContent);
-            if (newName && newName.trim()) {
-                this.textContent = newName.trim().toUpperCase();
-                showNotification(`👤 Name changed to ${this.textContent}`, 'success');
-            }
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        console.log('⚡ LIFEGRID SYSTEM ONLINE');
-        console.log('🔑 Double-click your name to change it');
-        console.log('📋 Click any agency card to view guide');
-        console.log('✅ Mark agencies as completed to track progress');
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

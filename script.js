@@ -60,7 +60,9 @@ function updateDashboardUI() {
 function toggleAgencyStatus(agency) {
     if (!currentUser) {
         showNotification('⚠️ Please login first', '#ffd700');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
         return;
     }
     userProgress[agency] = !userProgress[agency];
@@ -76,7 +78,10 @@ function checkAuth() {
     loadCurrentUser();
     const currentPage = window.location.pathname;
     if (currentPage.includes('index.html') || currentPage.endsWith('/main%20website/') || currentPage.endsWith('/')) {
-        if (currentUser) { window.location.href = 'dashboard.html'; return true; }
+        if (currentUser) { 
+            window.location.href = 'dashboard.html'; 
+            return true; 
+        }
     }
     if (currentPage.includes('dashboard.html')) {
         if (!currentUser) { 
@@ -121,7 +126,9 @@ function handleLogin(event) {
         sessionStorage.setItem('lifegrid_current', JSON.stringify(user));
         currentUser = user;
         showNotification('✅ ACCESS GRANTED', '#00ff41');
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 500);
+        setTimeout(() => { 
+            window.location.href = 'dashboard.html'; 
+        }, 500);
     } else {
         const userExists = users.find(u => u.username === username);
         showNotification(userExists ? '❌ Wrong password!' : '❌ Username not found! Please register.', '#ff4444');
@@ -171,7 +178,7 @@ function logout() {
 }
 
 // ============================================
-// MAP NAVIGATION
+// MAP NAVIGATION - CORRECTED FOR GITHUB PAGES
 // ============================================
 
 function openMap() {
@@ -184,11 +191,11 @@ function openMap() {
         return;
     }
     
-    // Open the map with user context
+    // Use RELATIVE path - this will go to:
+    // https://mmoraleds.github.io/lifegrid-app/synapse.html
     const mapUrl = 'synapse.html';
     showNotification('🗺️ Opening Main Map...', '#8ffcff');
     
-    // Small delay to show notification before redirect
     setTimeout(() => {
         window.location.href = mapUrl;
     }, 300);
@@ -206,7 +213,7 @@ function openMapLocator(agency) {
     
     showNotification('🗺️ Opening ' + agency + ' location map...', '#8ffcff');
     setTimeout(() => {
-        // Pass agency parameter and user info
+        // Use RELATIVE path with query parameters
         window.open('synapse.html?agency=' + encodeURIComponent(agency) + '&user=' + encodeURIComponent(currentUser.username), '_blank');
     }, 300);
 }
